@@ -1,0 +1,13 @@
+# Cloudflare Pages 헤더 설정
+# 음원 파일은 내용이 안 바뀌므로 브라우저에 길게 캐시
+/bow.m4a
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.mp3
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.m4a
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.opus
+  Cache-Control: public, max-age=31536000, immutable

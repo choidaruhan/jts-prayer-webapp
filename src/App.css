@@ -1,0 +1,200 @@
+.prayer-room {
+	min-height: 100dvh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 28px;
+	padding: 32px 20px;
+	text-align: center;
+	border-bottom: 1px solid var(--border); /* 정토회식 섹션 구분 */
+}
+
+.title {
+	font-size: clamp(2rem, 6vw, 3rem);
+	font-weight: 300; /* 정토회 대형 텍스트 스타일 */
+	letter-spacing: -0.03em;
+	margin: 0;
+	color: var(--text-h);
+}
+
+.subtitle {
+	margin: 0;
+	font-size: 0.95rem;
+	color: #666; /* 정토회 보조 텍스트 */
+}
+
+/* ── 시작 화면: 기도 선택 버튼 (정토회 플랫 스타일) ── */
+.track-list {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 16px;
+}
+
+.bow-btn {
+	font-size: 1.25rem;
+	letter-spacing: -0.03em;
+	color: #fff;
+	background: var(--accent);
+	border: 0;
+	border-radius: 0; /* 플랫 사각형 */
+	padding: 18px 64px;
+	cursor: pointer;
+	transition:
+		background 0.2s ease,
+		transform 0.1s ease;
+	-webkit-tap-highlight-color: transparent;
+	user-select: none;
+}
+
+.bow-btn:hover {
+	background: var(--accent-hover); /* 한 단계 진하게 */
+}
+
+.bow-btn:active {
+	transform: scale(0.97);
+}
+
+.bow-btn:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 4px;
+}
+
+/* ── 플레이어 화면 ── */
+.player-screen {
+	animation: player-fade 0.4s ease;
+}
+
+@keyframes player-fade {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.player-label {
+	margin: 0;
+	font-size: 0.85rem;
+	color: #999;
+}
+
+.player-title {
+	font-size: 2rem;
+	font-weight: 300;
+	letter-spacing: -0.03em;
+	margin: 0;
+	color: var(--text-h);
+}
+
+/* 재생/일시정지 버튼 */
+.player-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 96px;
+	height: 96px;
+	color: #fff;
+	background: var(--accent);
+	border: 0;
+	border-radius: 0; /* 플랫 사각형 */
+	cursor: pointer;
+	transition:
+		background 0.2s ease,
+		transform 0.1s ease;
+	-webkit-tap-highlight-color: transparent;
+}
+
+.player-btn:hover {
+	background: var(--accent-hover);
+}
+
+.player-btn:active {
+	transform: scale(0.95);
+}
+
+.player-btn:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 4px;
+}
+
+/* 진행 바 */
+.player-progress {
+	width: min(420px, 100%);
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.progress-bar {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 100%;
+	height: 4px;
+	border-radius: 0;
+	outline: none;
+	cursor: pointer;
+}
+
+.progress-bar::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 14px;
+	height: 14px;
+	border: 0;
+	border-radius: 50%;
+	background: var(--accent);
+	transition: transform 0.15s ease;
+}
+
+.progress-bar::-webkit-slider-thumb:hover {
+	transform: scale(1.25);
+}
+
+.progress-bar::-moz-range-thumb {
+	width: 14px;
+	height: 14px;
+	border: 0;
+	border-radius: 50%;
+	background: var(--accent);
+}
+
+.progress-bar::-moz-range-track {
+	height: 4px;
+	background: transparent;
+}
+
+.player-time {
+	display: flex;
+	justify-content: space-between;
+	font-size: 0.8rem;
+	color: #999;
+}
+
+/* 처음으로 (정토회 텍스트 링크 버튼 스타일) */
+.player-back {
+	font-size: 0.95rem;
+	color: var(--text);
+	background: none;
+	border: 0;
+	border-bottom: 1px solid var(--text);
+	padding: 4px 2px;
+	cursor: pointer;
+	transition:
+		color 0.2s ease,
+		border-color 0.2s ease;
+}
+
+.player-back:hover {
+	color: var(--secondary);
+	border-bottom-color: var(--secondary);
+}
+
+.player-back:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 4px;
+}

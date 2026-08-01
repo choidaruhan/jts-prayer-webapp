@@ -1,0 +1,25 @@
+
+!.vscode/extensions.json
+.DS_Store
+.idea
+.vscode/*
+*.local
+*.log
+*.njsproj
+*.ntvs*
+*.sln
+*.suo
+*.sw?
+# Editor directories and files
+# Logs
+bow-original-86MB.mp3
+cheonil-original-46MB.mp3
+dist
+dist-ssr
+lerna-debug.log*
+logs
+node_modules
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
