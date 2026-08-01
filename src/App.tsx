@@ -10,15 +10,16 @@ const TRACKS: Record<Track, { opus: string; aac: string; title: string }> = {
 	cheonil: { opus: "/cheonil.opus", aac: "/cheonil.m4a", title: "천일결사" },
 };
 
-// Opus 지원 감지 (데스크톱 사파리 일부 미지원 → AAC 폴백)
+// Opus 지원 감지 — "probably"만 신뢰 ("maybe"는 데스크톱 사파리 등 실제 재생 실패 위험)
 function supportsOpus(): boolean {
 	if (typeof window === "undefined") return false;
 	const a = document.createElement("audio");
-	return a.canPlayType('audio/ogg; codecs="opus"') !== "";
+	return a.canPlayType('audio/ogg; codecs="opus"') === "probably";
 }
 
 function formatTime(sec: number): string {
-	if (!Number.isFinite(sec) || sec < 0) return "0:00";
+	// Ogg Opus는 헤더에 길이 정보가 없어 Infinity일 수 있음 → 알 수 없음 표시
+	if (!Number.isFinite(sec) || sec < 0) return "--:--";
 	const m = Math.floor(sec / 60);
 	const s = Math.floor(sec % 60);
 	return `${m}:${s.toString().padStart(2, "0")}`;
@@ -57,17 +58,38 @@ function App() {
 	const audioRef = useRef<HTMLAudioElement>(null);
 	const [screen, setScreen] = useState<Screen>("start");
 	const [track, setTrack] = useState<Track>("bow");
-	const [useOpus] = useState(supportsOpus);
+	const [format, setFormat] = useState<"opus" | "aac">(
+		supportsOpus() ? "opus" : "aac",
+	);
+	const fallbackRef = useRef(false); // 재생 실패 폴백 1회만
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [currentTime, setCurrentTime] = useState(0);
-	const [duration, setDuration] = useState(0);
+	const [duration, setDuration] = useState<number>(NaN); // NaN = 아직 모름
 
-	const trackSrc = (t: Track) => (useOpus ? TRACKS[t].opus : TRACKS[t].aac);
+	const trackSrc = (t: Track) =>
+		format === "opus" ? TRACKS[t].opus : TRACKS[t].aac;
+
+	// 재생 실패 시 AAC로 자동 폴백
+	const handleError = () => {
+		if (format !== "opus" || fallbackRef.current) return;
+		fallbackRef.current = true;
+		setFormat("aac");
+		const audio = audioRef.current;
+		if (audio) {
+			audio.src = TRACKS[track].aac;
+			audio.load();
+			if (screen === "player") {
+				void audio.play().catch(() => {});
+			}
+		}
+	};
 
 	// 시작 화면 → 플레이어 전환 (버튼 클릭 제스처 안에서 재생 → iOS 호환)
 	const startPrayer = (t: Track) => {
 		const audio = audioRef.current;
 		setTrack(t);
+		setCurrentTime(0);
+		setDuration(NaN); // 트랙 변경 시 길이 리셋 (Ogg는 로드 후 갱신)
 		if (audio) {
 			audio.src = trackSrc(t); // 렌더 반영보다 먼저 교체
 			audio.currentTime = 0;
@@ -104,7 +126,9 @@ function App() {
 	};
 
 	const progressPercent =
-		duration > 0 ? Math.min(100, (currentTime / duration) * 100) : 0;
+		Number.isFinite(duration) && duration > 0
+			? Math.min(100, (currentTime / duration) * 100)
+			: 0;
 
 	return (
 		<>
@@ -114,7 +138,15 @@ function App() {
 				src={trackSrc(track)}
 				preload="auto"
 				onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
-				onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
+				onLoadedMetadata={(e) => {
+					const d = e.currentTarget.duration;
+					if (Number.isFinite(d)) setDuration(d);
+				}}
+				onDurationChange={(e) => {
+					const d = e.currentTarget.duration;
+					if (Number.isFinite(d)) setDuration(d);
+				}}
+				onError={handleError}
 				onEnded={() => setIsPlaying(false)}
 			/>
 
@@ -159,7 +191,7 @@ function App() {
 							type="range"
 							className="progress-bar"
 							min={0}
-							max={duration || 0}
+							max={Number.isFinite(duration) ? duration : 0}
 							step={0.1}
 							value={currentTime}
 							onChange={(e) => seek(Number(e.target.value))}
