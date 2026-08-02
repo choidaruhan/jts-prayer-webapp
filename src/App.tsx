@@ -133,9 +133,10 @@ function App() {
 	return (
 		<>
 			{/* 두 화면에서 공유하는 단일 오디오 요소 (전환 시 리마운트 방지) */}
+			{/* src prop 없음 — React가 재렌더링 시 src를 재설정하면
+				로드가 재시작되어 play()가 중단되므로, src는 명령형으로만 관리 */}
 			<audio
 				ref={audioRef}
-				src={trackSrc(track)}
 				preload="auto"
 				onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
 				onLoadedMetadata={(e) => {
