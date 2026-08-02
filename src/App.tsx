@@ -5,9 +5,15 @@ type Screen = "start" | "player";
 
 type Track = "bow" | "cheonil";
 
+const AUDIO_BASE = "https://prayer-audio.chl11wq12.workers.dev";
+
 const TRACKS: Record<Track, { opus: string; aac: string; title: string }> = {
-	bow: { opus: "/bow.opus", aac: "/bow.m4a", title: "절하기" },
-	cheonil: { opus: "/cheonil.opus", aac: "/cheonil.m4a", title: "천일결사" },
+	bow: { opus: `${AUDIO_BASE}/bow.opus`, aac: `${AUDIO_BASE}/bow.m4a`, title: "절하기" },
+	cheonil: {
+		opus: `${AUDIO_BASE}/cheonil.opus`,
+		aac: `${AUDIO_BASE}/cheonil.m4a`,
+		title: "천일결사",
+	},
 };
 
 // Opus 지원 감지 — "probably"만 신뢰 ("maybe"는 데스크톱 사파리 등 실제 재생 실패 위험)
