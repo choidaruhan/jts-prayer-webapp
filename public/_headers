@@ -1,2 +1,4 @@
 # Cloudflare Pages 헤더 설정
-# (음원은 /audio/* 함수가 Cache-Control을 직접 설정하므로 여기 규칙 불필요)
+# 음원 파일은 내용이 안 바뀌므로 브라우저에 길게 캐시
+/*.m4a
+  Cache-Control: public, max-age=31536000, immutable

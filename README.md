@@ -14,27 +14,23 @@ npm install
 npm run dev
 ```
 
-## 음원 구성 (Pages Functions + R2, 같은 도메인)
+## 음원 구성 (public/ 단순 서빙)
 
-| 트랙 | Opus (우선) | AAC (폴백) | 원본 백업 |
-| --- | --- | --- | --- |
-| 절하기 | `bow.opus` (23.4MB) | `bow.m4a` (21.9MB) | `bow-original-86MB.mp3` |
-| 천일결사 | `cheonil.opus` (14.3MB) | `cheonil.m4a` (14.2MB) | `cheonil-original-46MB.mp3` |
+| 트랙 | 파일 | 원본 백업 |
+| --- | --- | --- |
+| 절하기 | `public/bow.m4a` (21.9MB) | `bow-original-86MB.mp3` |
+| 천일결사 | `public/cheonil.m4a` (14.2MB) | `cheonil-original-46MB.mp3` |
 
-**음원은 같은 도메인의 `/audio/*` 경로에서 서빙됩니다:**
-
-- `functions/audio/[key].js` — Pages Functions가 R2 버킷(`prayer-audio`)에서
-  Range 요청을 직접 처리 (206 응답, 접미사 범위 지원 — Ogg 길이 스캔)
-- `wrangler.toml` — `[[r2_buckets]]` 바인딩으로 버킷 연결
-- 앱은 `/audio/bow.opus` 같은 같은 출처 URL 사용 (별도 도메인/워커 불필요)
-- **필수 이유**: Pages의 정적 서빙은 HTTP Range 미지원 → 오디오 스트리밍·탐색·
-  길이 인식 불가 (사파리/iOS는 Range 미지원 서버에서 재생 자체가 불안정)
-- **주의**: `wrangler r2 object put`은 4.118에서 로컬 시뮬레이션에 저장되는 버그가
-  확인됨 → 업로드는 Cloudflare API 직접 사용:
-  `PUT /accounts/{id}/r2/buckets/prayer-audio/objects/{key}` (Bearer OAuth 토큰)
-- **Opus**: 유튜브·스포티파이 표준 코덱 (Chrome/Edge/Firefox/iOS 18.4+)
-- **AAC 폴백**: 데스크톱 사파리 등 미지원 브라우저용 (`canPlayType` "probably" 감지)
+- **AAC(.m4a) 모노 48kbps 단일 포맷** — 헤더에 길이가 있어 Range 미지원 서버에서도
+  길이 표시·재생이 동작 (Cloudflare Pages는 HTTP Range 미지원)
+- 음원 교체: 파일만 교체 후 배포 (`npm run build && npx wrangler pages deploy dist`)
+- 25MiB 파일 제한 주의: 60분 음원은 모노 48kbps 이하로 압축
+  `ffmpeg -i 원본 -ac 1 -c:a aac -b:a 48k -movflags +faststart 출력.m4a`
 - 백업 파일 2개는 git 제외, 배포 안 됨
+
+> 참고: 이전에는 R2 + Pages Functions로 Range 스트리밍을 구성했으나
+> 단순화를 위해 폴백(public/)으로 전환. 사파리/iOS에서 탐색(시크)이
+> 제한될 수 있으나 재생·길이 표시는 정상.
 
 > ⚠️ Cloudflare Pages는 **파일당 25MiB 제한**이 있습니다. 음원 교체 시 25MiB 이하로 압축:
 >
