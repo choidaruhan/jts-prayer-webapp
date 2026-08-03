@@ -5,10 +5,14 @@ type Screen = "start" | "player";
 
 type Track = "bow" | "cheonil";
 
-const AUDIO_BASE = "https://prayer-audio.chl11wq12.workers.dev";
+const AUDIO_BASE = "/audio"; // Pages Functions(/audio/*)이 R2에서 Range 처리
 
 const TRACKS: Record<Track, { opus: string; aac: string; title: string }> = {
-	bow: { opus: `${AUDIO_BASE}/bow.opus`, aac: `${AUDIO_BASE}/bow.m4a`, title: "절하기" },
+	bow: {
+		opus: `${AUDIO_BASE}/bow.opus`,
+		aac: `${AUDIO_BASE}/bow.m4a`,
+		title: "절하기",
+	},
 	cheonil: {
 		opus: `${AUDIO_BASE}/cheonil.opus`,
 		aac: `${AUDIO_BASE}/cheonil.m4a`,
