@@ -5,9 +5,10 @@ type Screen = "start" | "player";
 
 type Track = "bow" | "cheonil";
 
+// /audio/* 는 Pages Function이 Range(206)로 서빙 — 시크(시간 조정) 지원
 const TRACKS: Record<Track, { src: string; title: string }> = {
-	bow: { src: "/bow.m4a", title: "절하기" },
-	cheonil: { src: "/cheonil.m4a", title: "천일결사" },
+	bow: { src: "/audio/bow.m4a", title: "절하기" },
+	cheonil: { src: "/audio/cheonil.m4a", title: "천일결사" },
 };
 
 function formatTime(sec: number): string {
