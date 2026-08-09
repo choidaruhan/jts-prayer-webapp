@@ -56,5 +56,5 @@ npm run dev
 
 ```bash
 npm run build
-npx wrangler pages deploy dist --project-name prayer-app
+npx wrangler pages deploy dist --project-name jts-prayer
 ```

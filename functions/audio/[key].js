@@ -34,6 +34,9 @@ export async function onRequestGet(context) {
 		"Content-Type": type,
 		"Accept-Ranges": "bytes",
 		"Cache-Control": "public, max-age=31536000, immutable",
+		// 엣지 캐시가 Range 헤더별로 응답을 구분하도록 — 첫 요청의 206이
+		// 캐시되어 다른 오프셋 시크 요청에 잘못 서빙되는 것 방지
+		"Vary": "Range",
 	};
 
 	const range = request.headers.get("Range");

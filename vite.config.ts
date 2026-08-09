@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 // 로컬 dev에는 Pages Functions(env.ASSETS)가 없으므로 배포 사이트로 프록시
-const audioProxyTarget = "https://prayer-app-dyc.pages.dev";
+const audioProxyTarget = "https://jts-prayer.pages.dev";
 
 // https://vite.dev/config/
 export default defineConfig({
